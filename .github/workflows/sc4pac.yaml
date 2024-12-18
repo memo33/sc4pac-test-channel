@@ -1,4 +1,4 @@
-name: sc4pac CI/CD
+name: sc4pac CI
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   channel:
-    uses: memo33/sc4pac-actions/.github/workflows/sc4pac-channel.yaml@main
+    uses: memo33/sc4pac-actions/.github/workflows/sc4pac-channel.yaml@unstable
     with:
       path: src/yaml
       channel-label: Test
