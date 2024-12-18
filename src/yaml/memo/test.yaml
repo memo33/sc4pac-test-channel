@@ -1,9 +1,15 @@
 group: memo
 name: test
-subfolder: 050-load-first
-version: "1.0"
+subfolder: 052-load-first
+version: "1"
 assets:
 - assetId: "cyclone-boom-save-warning-disable-exit-quit"
+info:
+  description: |
+    I
+
+variants:
+- variant: { memo:test:foo.bar: value }
 
 ---
 assetId: "cyclone-boom-save-warning-disable-exit-quit"

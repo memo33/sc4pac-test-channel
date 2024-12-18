@@ -1,0 +1,9 @@
+extra-channels:
+- https://memo33.github.io/sc4pac/channel/
+subfolders:
+- 050-load-first
+- 052-load-first
+- 150-mods
+allow-ego-perspective: true
+ignore-version-mismatches:
+- memo:test
