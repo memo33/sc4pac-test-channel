@@ -10,6 +10,7 @@ info:
 
 variants:
 - variant: { memo:test:foo.bar: value }
+- variant: { memo:test:foo.bar: value2 }
 
 ---
 assetId: "cyclone-boom-save-warning-disable-exit-quit"
