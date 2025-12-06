@@ -1,3 +1,4 @@
+{
 group: memo
 name: test
 subfolder: 052-load-first
@@ -6,7 +7,7 @@ assets:
 - assetId: "cyclone-boom-save-warning-disable-exit-quit"
 info:
   description: |
-    I am
+    I am.
 
 variants:
 - variant: { memo:test:foo.bar: value }
