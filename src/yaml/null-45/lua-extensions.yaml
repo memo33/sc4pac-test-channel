@@ -1,14 +1,14 @@
 group: "null-45"
 name: "lua-extensions-dll"
-version: "1.1.1"
+version: "1.3"
 subfolder: "150-mods"
 assets:
 - assetId: "null-45-lua-extensions"
   withChecksum:
   - include: "/SC4LuaExtensions.dll"
-    sha256: 19FAE2017C18E7BFB4D26F71FAB615234DFD1363CA87DAF1A816232963862849
+    sha256: 53b7de94f5fbb1c02e9bc5f11558fe534e58e0535b20009f68b3e4f35e0c6947
   - include: "/SC4LuaExtensions.dat"
-    sha256: 3FB7B73424C0FF18E25E60C81F087B6A94C3621493213E7356F7E10923732CC4
+    sha256: cff892e68825e93325584689789616688915149b640ce595f7f97a5042668d5c
 
 info:
   summary: A DLL Plugin that extends the game's Lua system with new functions for developers
@@ -32,7 +32,7 @@ info:
 
 ---
 assetId: "null-45-lua-extensions"
-version: "1.1.1"
-lastModified: "2026-02-20T13:06:19Z"
+version: "1.3"
+lastModified: "2026-04-12T12:20:48Z"
 nonPersistentUrl: "https://community.simtropolis.com/files/file/36925-lua-extensions-dll/?do=download"
-url: "https://github.com/0xC0000054/sc4-lua-extensions/releases/download/v1.1.1/SC4LuaExtensions.zip"
+url: "https://github.com/0xC0000054/sc4-lua-extensions/releases/download/v1.3.0/SC4LuaExtensions.zip"
