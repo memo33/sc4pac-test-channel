@@ -13,6 +13,7 @@ assets:
 info:
   summary: A DLL Plugin that extends the game's Lua system with new functions for developers
   conflicts: "Only compatible with game version 1.1.641, the Windows digital edition."
+  # dummy edit 2
   description: |
     This file is a dependency for plugins that use the new Lua script functions.
 
