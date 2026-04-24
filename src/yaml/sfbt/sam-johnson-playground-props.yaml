@@ -1,6 +1,6 @@
 group: sfbt
 name: sam-johnson-playground-props
-version: "0.1"
+version: "1"
 subfolder: 100-props-textures
 info:
   summary: Playground Props by Sam Johnson
@@ -17,6 +17,6 @@ assets:
 
 ---
 assetId: sfbt-sam-johnson-playground-props
-version: "0.1"
-lastModified: "2003-08-17T18:19:43.000Z"
+version: "1"
+lastModified: "2023-08-17T18:19:43Z"
 url: https://www.sc4evermore.com/index.php/downloads?task=download.send&id=122:sfbt-props-sam-johnson-playground-props
