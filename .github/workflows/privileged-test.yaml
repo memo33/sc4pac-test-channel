@@ -7,9 +7,18 @@ on:
       - completed
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "dummy test failure" && false
-
+  channel-proxy:
+    uses: memo33/sc4pac-actions/.github/workflows/sc4pac-privileged.yaml@privileges
+    with:
+      workflow-run-id: ${{ github.event.workflow_run.id }}
+      skip-test: false
+      skip-url-check: false
+    secrets:
+      # The secrets are needed if the channel contains STEX files.
+      # Configure them under: Settings > Secrets and variables > Actions > Repository secrets.
+      # The `SC4PAC_SIMTROPOLIS_TOKEN` is used by `test`, the `STEX_API_KEY` by `url-check`.
+      sc4pac-simtropolis-token: ${{ secrets.SC4PAC_SIMTROPOLIS_TOKEN }}
+      stex-api-key: ${{ secrets.STEX_API_KEY }}
+    permissions:
+      contents: read
+      checks: write

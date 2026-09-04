@@ -7,3 +7,5 @@ subfolders:
 allow-ego-perspective: true
 ignore-version-mismatches:
 - memo:test
+group-to-github:
+- "null-45": "0xC0000054"
