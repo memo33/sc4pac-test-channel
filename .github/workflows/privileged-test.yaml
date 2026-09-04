@@ -14,25 +14,50 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Create check run
-        id: create_check
+      # - name: Create check run
+      #   id: create_check
+      #   uses: actions/github-script@v7
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     script: |
+      #       const response = await github.rest.checks.create({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         name: "privileged-test",
+      #         head_sha: context.payload.workflow_run.head_sha,
+      #         status: "in_progress",
+      #         details_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+      #         output: {
+      #           title: "Privileged test",
+      #           summary: "Test is running..."
+      #         }
+      #       });
+      #       core.setOutput("check_run_id", response.data.id);
+
+      - name: Find the check run created by the original workflow
+        id: locate
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const response = await github.rest.checks.create({
+            const { data } = await github.rest.checks.listForSuite({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              name: "privileged-test",
-              head_sha: context.payload.workflow_run.head_sha,
-              status: "in_progress",
-              details_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              output: {
-                title: "Privileged test",
-                summary: "Test is running..."
-              }
+              check_suite_id: context.payload.workflow_run.check_suite_id,
             });
-            core.setOutput("check_run_id", response.data.id);
+
+            const match = data.check_runs.find(run =>
+              run.name === "privileged-test" &&
+              run.head_sha === context.payload.workflow_run.head_sha
+            );
+
+            if (!match) {
+              core.setFailed("No matching privileged-test check run found in workflow_run.check_suite_id");
+              return;
+            }
+
+            core.setOutput("check_run_id", String(match.id));
+            console.log("Found check run:", match.id);
 
       - name: Run test
         id: test
@@ -49,7 +74,7 @@ jobs:
             await github.rest.checks.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              check_run_id: Number("${{ steps.create_check.outputs.check_run_id }}"),
+              check_run_id: Number("${{ steps.locate.outputs.check_run_id }}"),
               status: "completed",
               conclusion,
               completed_at: new Date().toISOString(),

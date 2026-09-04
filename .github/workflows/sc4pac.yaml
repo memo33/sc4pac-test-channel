@@ -21,3 +21,28 @@ jobs:
     permissions:
       pages: write
       id-token: write
+
+  prepare:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+    steps:
+      - name: Create pending privileged check
+        id: priv
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const res = await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: "privileged-test",
+              head_sha: "${{ github.event.pull_request.head.sha || github.sha }}",
+              status: "in_progress",
+              details_url: "https://example.invalid/queued",
+              output: {
+                title: "Privileged test",
+                summary: "Waiting for privileged test result..."
+              }
+            });
+            core.setOutput("check_run_id", res.data.id);
