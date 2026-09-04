@@ -1,0 +1,15 @@
+name: privileged-test
+
+on:
+  workflow_run:
+    workflows: ["sc4pac CI"]
+    types:
+      - completed
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "dummy test failure" && false
+
