@@ -8,61 +8,55 @@ on:
 
 permissions:
   contents: read
-  statuses: write
+  checks: write
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Set pending status on triggering commit
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          curl -sS -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }}" \
-            -d @- <<JSON
-          {
-            "state": "pending",
-            "context": "privileged-test",
-            "description": "Waiting for privileged test result",
-            "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          }
-          JSON
+      - name: Create check run
+        id: create_check
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const response = await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: "privileged-test",
+              head_sha: context.payload.workflow_run.head_sha,
+              status: "in_progress",
+              details_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              output: {
+                title: "Privileged test",
+                summary: "Test is running..."
+              }
+            });
+            core.setOutput("check_run_id", response.data.id);
 
       - name: Run test
         id: test
         run: |
           echo "dummy test failure" && false
 
-      - name: Update final commit status
+      - name: Finish check run
         if: always()
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if [ "${{ steps.test.outcome }}" = "success" ]; then
-            STATE="success"
-            DESC="privileged test passed"
-          elif [ "${{ steps.test.outcome }}" = "failure" ]; then
-            STATE="failure"
-            DESC="privileged test failed"
-          else
-            STATE="error"
-            DESC="privileged test errored"
-          fi
-
-          curl -sS -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_sha }}" \
-            -d @- <<JSON
-          {
-            "state": "${STATE}",
-            "context": "privileged-test",
-            "description": "${DESC}",
-            "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          }
-          JSON
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const conclusion = "${{ steps.test.outcome }}" === "success" ? "success" : "failure";
+            await github.rest.checks.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              check_run_id: Number("${{ steps.create_check.outputs.check_run_id }}"),
+              status: "completed",
+              conclusion,
+              completed_at: new Date().toISOString(),
+              details_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              output: {
+                title: "Privileged test",
+                summary: `Result: ${conclusion}`,
+                text: `View logs: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+              }
+            });
