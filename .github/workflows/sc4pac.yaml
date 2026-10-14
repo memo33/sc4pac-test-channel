@@ -8,7 +8,7 @@ on:
 
 jobs:
   channel:
-    uses: memo33/sc4pac-actions/.github/workflows/sc4pac-channel.yaml@privileges
+    uses: memo33/sc4pac-actions/.github/workflows/sc4pac-channel.yaml@v2
     with:
       path: src/yaml
       channel-label: Test
