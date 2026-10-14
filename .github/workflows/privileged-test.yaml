@@ -1,4 +1,4 @@
-name: privileged-test
+name: sc4pac-test
 
 on:
   workflow_run:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   channel-proxy:
-    uses: memo33/sc4pac-actions/.github/workflows/sc4pac-privileged.yaml@privileges
+    uses: memo33/sc4pac-actions/.github/workflows/sc4pac-privileged.yaml@v2
     with:
       workflow-run-id: ${{ github.event.workflow_run.id }}
       skip-test: false
